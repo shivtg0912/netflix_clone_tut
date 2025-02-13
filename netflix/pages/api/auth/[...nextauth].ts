@@ -1,26 +1,36 @@
 import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
 import { compare } from 'bcrypt';
-
+import GithubProvider from 'next-auth/providers/github';
+import GoogleProvider from 'next-auth/providers/google';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prismadb from '@/lib/prismadb';
+import CredentialsProvider from 'next-auth/providers/credentials';
 export default NextAuth({
     providers: [
-        Credentials ({
+        GithubProvider({
+            clientId: process.env.GITHUB_ID || "",
+            clientSecret: process.env.GITHUB_SECRET || ""
+        }),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_ID || "",
+            clientSecret: process.env.GOOGLE_SECRET || ""
+        }),
+        CredentialsProvider({
             id: 'credentials',
             name: 'credentials',
             credentials: {
                 email: {
-                    label: "Email", 
+                    label: "Email",
                     type: "text",
-                }, 
+                },
                 password: {
-                    label: "Password", 
+                    label: "Password",
                     type: "password",
-                } 
+                }
             },
             async authorize(credentials) {
-                if(!credentials?.email || !credentials?.password) { //this checks if the email and password are provided
-                   throw new Error('Email and Password are required');
+                if (!credentials?.email || !credentials?.password) {
+                    throw new Error('Email and Password are required');
                 }
                 const user = await prismadb.user.findUnique({  // findUnique is a Prisma method that finds a single record that matches the unique key
                     where: {
@@ -41,9 +51,10 @@ export default NextAuth({
         })
     ],
     pages: {
-        signIn: '/auth/',
+        signIn: '/auth/'
     },
     debug: process.env.NODE_ENV === 'development', //this is used to enable debug mode
+    adapter: PrismaAdapter(prismadb),
     session: { //this is used to set the session options
         strategy: 'jwt',
     },

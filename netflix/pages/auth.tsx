@@ -3,6 +3,9 @@ import { useCallback, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { signIn } from 'next-auth/react';
+import { FcGoogle } from 'react-icons/fc';
+import { FaGithub } from 'react-icons/fa';
+
 const Auth = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
@@ -12,7 +15,7 @@ const Auth = () => {
     const toggleVariant = useCallback(() => {
         setVariant((curr) => curr === 'login' ? 'register' : 'login'); 
     },[]); // Add the setVariant dependency
-    const login = useCallback(async()=> {
+    const login = useCallback(async() => {
         try {
             await signIn('credentials', {
                 email,
@@ -51,13 +54,13 @@ const Auth = () => {
                         </h2>
                         <div className="flex flex-col gap-4">
                             {variant === 'register' && (
-                            <Input
-                                label="Username"
-                                onChange={(e:any) => setName(e.target.value)}
-                                id="name"
-                                type="name"
-                                value={name}
-                            />
+                                <Input
+                                    label="Username"
+                                    onChange={(e:any) => setName(e.target.value)}
+                                    id="name"
+                                    type="name"
+                                    value={name}
+                                />
                             )}
                             <Input
                                 label="Email"
@@ -74,9 +77,30 @@ const Auth = () => {
                                 value={password}
                             />
                         </div>
-                        <button onClick={variant === 'login' ? login : register} className="bg-red-600 text-white rounded-md px-6 py-3 mt-4 w-full hover:bg-red-700">
-                        {variant === 'login' ? 'Login' : 'Sign Up'}
+                        <button onClick={variant === 'login' ? login : register} className="
+                            bg-red-600 
+                            text-white 
+                            rounded-md 
+                            px-6 
+                            py-3 
+                            mt-4 
+                            w-full 
+                            hover:bg-red-700"
+                        >
+                            {variant === 'login' ? 'Login' : 'Sign Up'}
                         </button>
+                        <div className="flex flex-row items-center gap-4 mt-8 justify-center">
+                            <div onClick={()=>
+                                signIn('google',{callbackUrl:'/'})
+                            } className="cursor-pointer w-10 h-10 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition">
+                                <FcGoogle size={30}/>
+                            </div>
+                            <div onClick={()=>
+                                signIn('github',{callbackUrl:'/'})
+                            } className="cursor-pointer w-10 h-10 bg-white rounded-full flex items-center justify-center hover:opacity-80 transition">
+                                <FaGithub size={30}/>
+                            </div>
+                        </div>
                         <p className="ml-5 text-neutral-500 mt-12 text-center">
                             {variant === 'login' ? "Don't have an account?" : 'Already have an account?'}
                             <span onClick={toggleVariant} className="text-white ml-5 mr-7 hover:underline cursor-pointer">

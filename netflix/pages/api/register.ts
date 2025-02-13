@@ -3,13 +3,13 @@ import bcrypt from 'bcrypt';
 import prismadb from '@/lib/prismadb';
 export default async function handler(req: NextApiRequest, res:NextApiResponse) {
     if (req.method !== 'POST') {
-        return res.status(405).end(); // we want to return a 405 status code for any non-POST requests
+        return res.status(405).end();
     }
     try {
         const {email, name, password} = req.body;
         const existingUser = await prismadb.user.findUnique({ //
             where: {
-            email: email,
+                email,
             },
         });
         if (existingUser) {

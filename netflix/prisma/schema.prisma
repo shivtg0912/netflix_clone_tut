@@ -4,14 +4,14 @@ generator client {
 
 datasource db {
   provider = "mongodb"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
 model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId // @id marks the field as the primary key
-  name     String
-  image    String?
-  email    String? @unique
+  id String @id @default(auto()) @map("_id") @db.ObjectId // @id marks the field as the primary key
+  name String
+  image String?
+  email String? @unique
   emailVerified DateTime?
   hashedPassword String? 
   createdAt DateTime @default(now())
@@ -22,42 +22,43 @@ model User {
 }
 
 model Account {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  userId   String @db.ObjectId
-  type    String
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  type String
   provider String
   providerAccountId String
-  refreshToken String? @db.String //future-proofing
-  accessToken String? @db.String
-  accessTokenExpires Int? //because it's a timestamp
-  id_token String? @db.String
-  token_type String? 
-  sessionState String? @db.String
+  refresh_token String? @db.String //future-proofing
+  access_token String? @db.String 
+  expires_at Int? 
+  token_type String?
   scope String?
+  id_token String? @db.String
+  session_state String? 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@unique([provider,providerAccountId])
 }
 
 model Session {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String @unique
   userId String @db.ObjectId
-  expiresAt DateTime
+  expires DateTime
   user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
 }
 
 model VerificationToken {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token String @unique
   expires DateTime
+  @@unique([identifier,token])
 }
 model Movie{
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
   title String
   description String
-  thumbnail String
+  thumbnailUrl String
+  genre String  
   videoUrl String
-  genre String
   duration String
 }
