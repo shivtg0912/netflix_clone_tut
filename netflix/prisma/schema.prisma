@@ -36,6 +36,7 @@ model Account {
   session_state String? 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@unique([provider,providerAccountId])
+
 }
 
 model Session {
@@ -57,7 +58,7 @@ model Movie{
   id String @id @default(auto()) @map("_id") @db.ObjectId
   title String
   description String
-  thumbnailUrl String
+  thumbnail String
   genre String  
   videoUrl String
   duration String
